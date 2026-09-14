@@ -1,0 +1,14 @@
+[project]
+name = "arc2-digital-twin"
+version = "0.1.0"
+description = "ARC-2 Digital Twin - Milestone 1 simulation testbed"
+requires-python = ">=3.10"
+dependencies = []        # standard library only, by design
+
+[project.optional-dependencies]
+# none. If a dependency is ever added, the determinism guarantees in
+# docs/ARCHITECTURE.md must be re-verified against it.
+
+[tool.arc2]
+milestone = 1
+status = "complete"
