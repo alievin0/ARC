@@ -1,0 +1,12 @@
+# Webots Cloud configuration.
+#
+# webots.cloud parses this file at the repository root to decide what kind of
+# Webots repository this is and whether it may be published.
+#
+# The world to run is NOT named here -- it comes from the URL given to
+# webots.cloud, i.e. .../blob/main/worlds/mini_arc2.wbt. The controller is not
+# named here either; Webots resolves it from the world's own
+# `controller "mini_arc2"` field to controllers/mini_arc2/mini_arc2.py.
+
+type: demo
+publish: true
