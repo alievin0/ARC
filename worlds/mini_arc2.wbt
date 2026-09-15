@@ -1,0 +1,318 @@
+#VRML_SIM R2023b utf8
+
+# MINI ARC-2 -- v0.1 minimal driving simulation.
+#
+# Deliberately simple: base Webots nodes only, no EXTERNPROTO, so the world
+# opens offline with no downloads. Everything is a primitive box or cylinder.
+#
+# Coordinate system is ENU / FLU (Webots default since R2022a):
+#   +X = forward, +Y = left, +Z = up.
+#
+# Robot body   : 0.30 m long x 0.18 m wide x 0.12 m high
+# Wheels       : 65 mm diameter (radius 0.0325 m), 30 mm wide
+# Body centre  : 0.09 m above the floor  ->  30 mm of ground clearance
+# Track        : wheel centres at y = +/-0.107, so the inner wheel face sits
+#                2 mm clear of the 0.09 m body side (avoids coplanar faces)
+
+WorldInfo {
+  title "MINI ARC-2"
+  basicTimeStep 16
+  contactProperties [
+    ContactProperties {
+      material1 "floor"
+      material2 "wheel"
+      coulombFriction [
+        0.9
+      ]
+    }
+  ]
+}
+Viewpoint {
+  orientation 0.7985 0.3308 0.5029 1.378
+  position 1 -1 0.7
+}
+Background {
+  skyColor [
+    0.45 0.6 0.8
+  ]
+}
+DirectionalLight {
+  direction 0.5 -0.6 -1
+  intensity 2.5
+  castShadows TRUE
+}
+
+# ---------------------------------------------------------------- floor ----
+Solid {
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.57 0.58
+        roughness 1
+        metalness 0
+      }
+      geometry Plane {
+        size 8 8
+      }
+    }
+  ]
+  name "floor"
+  contactMaterial "floor"
+  boundingObject Plane {
+    size 8 8
+  }
+}
+
+# ------------------------------------------------------------ MiniARC2 ----
+Robot {
+  translation 0 0 0.09
+  children [
+    # -- chassis -------------------------------------------------------
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 0.85 0.45 0.1
+        roughness 0.6
+        metalness 0.2
+      }
+      geometry Box {
+        size 0.3 0.18 0.12
+      }
+    }
+
+    # -- forward-facing camera ----------------------------------------
+    # Webots cameras look along their own +X axis, so no rotation needed.
+    Camera {
+      translation 0.155 0 0.03
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.05 0.05 0.05
+            roughness 0.4
+            metalness 0.5
+          }
+          geometry Box {
+            size 0.01 0.03 0.03
+          }
+        }
+      ]
+      name "camera"
+      fieldOfView 1.05
+      width 160
+      height 120
+    }
+
+    # -- forward-facing distance sensor -------------------------------
+    # Rays are cast along the sensor's own +X axis. The lookup table maps
+    # 0.0 m -> 0 and 1.0 m -> 1000, i.e. the raw reading is millimetres.
+    DistanceSensor {
+      translation 0.155 0 -0.02
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.9 0.9 0.2
+            roughness 0.5
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.02 0.02
+          }
+        }
+      ]
+      name "front_distance_sensor"
+      lookupTable [
+        0 0 0
+        1 1000 0
+      ]
+    }
+
+    # -- wheels --------------------------------------------------------
+    # One block per wheel. To change the wheel size, edit WHEEL_SHAPE and
+    # the four boundingObject cylinders to match.
+    #
+    # The Cylinder primitive is aligned with +Z, so each wheel Solid is
+    # rotated -90 deg about X to stand the wheel up on the Y (left-right)
+    # axis. The hinge axis itself is "axis 0 1 0" in the robot frame, so a
+    # POSITIVE motor velocity always drives the robot forward.
+
+    # front left
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0.1 0.107 -0.0575
+      }
+      device [
+        RotationalMotor {
+          name "front_left_wheel_motor"
+          maxVelocity 20
+          maxTorque 5
+        }
+        PositionSensor {
+          name "front_left_wheel_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.1 0.107 -0.0575
+        rotation 1 0 0 -1.5708
+        children [
+          DEF WHEEL_SHAPE Shape {
+            appearance PBRAppearance {
+              baseColor 0.12 0.12 0.14
+              roughness 0.9
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.03
+              radius 0.0325
+              subdivision 24
+            }
+          }
+        ]
+        name "front_left_wheel"
+        contactMaterial "wheel"
+        boundingObject Cylinder {
+          height 0.03
+          radius 0.0325
+          subdivision 24
+        }
+        physics Physics {
+          density -1
+          mass 0.15
+        }
+      }
+    }
+
+    # front right
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0.1 -0.107 -0.0575
+      }
+      device [
+        RotationalMotor {
+          name "front_right_wheel_motor"
+          maxVelocity 20
+          maxTorque 5
+        }
+        PositionSensor {
+          name "front_right_wheel_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.1 -0.107 -0.0575
+        rotation 1 0 0 -1.5708
+        children [
+          USE WHEEL_SHAPE
+        ]
+        name "front_right_wheel"
+        contactMaterial "wheel"
+        boundingObject Cylinder {
+          height 0.03
+          radius 0.0325
+          subdivision 24
+        }
+        physics Physics {
+          density -1
+          mass 0.15
+        }
+      }
+    }
+
+    # rear left
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.1 0.107 -0.0575
+      }
+      device [
+        RotationalMotor {
+          name "rear_left_wheel_motor"
+          maxVelocity 20
+          maxTorque 5
+        }
+        PositionSensor {
+          name "rear_left_wheel_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.1 0.107 -0.0575
+        rotation 1 0 0 -1.5708
+        children [
+          USE WHEEL_SHAPE
+        ]
+        name "rear_left_wheel"
+        contactMaterial "wheel"
+        boundingObject Cylinder {
+          height 0.03
+          radius 0.0325
+          subdivision 24
+        }
+        physics Physics {
+          density -1
+          mass 0.15
+        }
+      }
+    }
+
+    # rear right
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.1 -0.107 -0.0575
+      }
+      device [
+        RotationalMotor {
+          name "rear_right_wheel_motor"
+          maxVelocity 20
+          maxTorque 5
+        }
+        PositionSensor {
+          name "rear_right_wheel_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.1 -0.107 -0.0575
+        rotation 1 0 0 -1.5708
+        children [
+          USE WHEEL_SHAPE
+        ]
+        name "rear_right_wheel"
+        contactMaterial "wheel"
+        boundingObject Cylinder {
+          height 0.03
+          radius 0.0325
+          subdivision 24
+        }
+        physics Physics {
+          density -1
+          mass 0.15
+        }
+      }
+    }
+  ]
+  name "MiniARC2"
+  boundingObject USE BODY
+  physics Physics {
+    density -1
+    mass 2.5
+  }
+  controller "mini_arc2"
+}
+
+# ------------------------------------------------- something to drive at ---
+Solid {
+  translation 1.2 0 0.1
+  children [
+    DEF BOX_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.5 0.75
+        roughness 0.8
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.2 0.2
+      }
+    }
+  ]
+  name "obstacle"
+  boundingObject USE BOX_SHAPE
+}
