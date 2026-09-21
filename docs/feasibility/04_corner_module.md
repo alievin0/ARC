@@ -1,5 +1,7 @@
 # Part 4 — The corner module
 
+> **Revision note (V0 architecture).** `docs/architecture/` supersedes two decisions in this part after packaging and side-view-geometry checks: the front arm is **leading** (pivot behind the wheel, under the footboard), not trailing, and the brakes are **inboard** on the carriers. Reasons and numbers: `docs/architecture/02_master_geometry.md` §2.2 and `docs/architecture/calc/kinematics.py`.
+
 This part designs one complete corner module of the selected architecture
 (Part 3, Option C: trailing arm + actuated coaxial carrier). The front and
 rear modules share the carrier, pivot, actuator, lock and sensor set; they

@@ -1,5 +1,7 @@
 # Part 16 — Recommended ARC-2B architecture
 
+> **Revision note (V0 architecture).** `docs/architecture/` supersedes two decisions in this part after packaging and side-view-geometry checks: the front arm is **leading** (pivot behind the wheel, under the footboard), not trailing, and the brakes are **inboard** on the carriers. Reasons and numbers: `docs/architecture/02_master_geometry.md` §2.2 and `docs/architecture/calc/kinematics.py`.
+
 One vehicle platform, two bodies:
 - **ARC-2B** (base): road, robotic, snow (swap-in kits), optional displacement swim kit.
 - **ARC-2B M** (marine variant, later generation): same platform and corner modules under a 2.6 × 1.5 m planing hull with a PWC-class jet.

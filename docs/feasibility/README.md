@@ -14,6 +14,8 @@ read in full; most manufacturer and standards numbers are search-snippet
 level). No source is fabricated; none of the snippet-level numbers should be
 quoted externally before the verification pass listed first in Part 18.
 
+**Follow-on document:** the CAD-ready master architecture in [`docs/architecture/`](../architecture/README.md) refines the geometry (front leading arm, inboard brakes, 487 kg budget) and adds the transformation sequences, design language and CAD package.
+
 ## Executive summary
 
 1. **The product idea is sound; the concept as drawn is not.** Four modes on

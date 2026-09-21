@@ -1,5 +1,7 @@
 # Part 3 — Transformation mechanism: three candidates, one selection
 
+> **Revision note (V0 architecture).** `docs/architecture/` supersedes two decisions in this part after packaging and side-view-geometry checks: the front arm is **leading** (pivot behind the wheel, under the footboard), not trailing, and the brakes are **inboard** on the carriers. Reasons and numbers: `docs/architecture/02_master_geometry.md` §2.2 and `docs/architecture/calc/kinematics.py`.
+
 > All numbers below are DERIVED from the RC-0 assumptions in `calc/params.py`
 > by `calc/mechanism_statics.py`. They are sizing estimates for comparison,
 > not a specification. Re-run `python3 calc/run_all.py` after changing an

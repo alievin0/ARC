@@ -1,5 +1,7 @@
 # Part 7 — Drivetrain architecture
 
+> **Revision note (V0 architecture).** `docs/architecture/` supersedes two decisions in this part after packaging and side-view-geometry checks: the front arm is **leading** (pivot behind the wheel, under the footboard), not trailing, and the brakes are **inboard** on the carriers. Reasons and numbers: `docs/architecture/02_master_geometry.md` §2.2 and `docs/architecture/calc/kinematics.py`.
+
 ## 7.1 The five candidates
 
 | | A. Four hub motors | B. Four inboard (chassis) motors + half-shafts | C. Two front + two rear motors on the corner carriers | D. Central motor(s) + mechanical differentials | E. Rear motor + mechanical track drive coupling |
