@@ -14,7 +14,7 @@ read in full; most manufacturer and standards numbers are search-snippet
 level). No source is fabricated; none of the snippet-level numbers should be
 quoted externally before the verification pass listed first in Part 18.
 
-**Follow-on document:** the CAD-ready master architecture in [`docs/architecture/`](../architecture/README.md) refines the geometry (front leading arm, inboard brakes, 487 kg budget) and adds the transformation sequences, design language and CAD package.
+**Follow-on documents:** the amphibious study in [`docs/amphibious/`](../amphibious/README.md) supersedes this study's Part 9 conclusion for the base vehicle (a displacement-speed integrated architecture exists); the CAD-ready master architecture in [`docs/architecture/`](../architecture/README.md) refines the geometry (front leading arm, inboard brakes, 487 kg budget) and adds the transformation sequences, design language and CAD package.
 
 ## Executive summary
 

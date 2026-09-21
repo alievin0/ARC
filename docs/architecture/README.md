@@ -35,6 +35,8 @@ base; anything needing a new source is marked TBD.
 | 15 | [Recommended V0, Buildable V0, DO NOT BUILD YET](15_final_architecture_v0.md) | 37, 38, 39, 40 |
 | — | [calc/](calc/) | `params_v0.py`, `mass_budget_v0.py`, `kinematics.py`, `steering.py`, `ski_track.py`, `energy_buoyancy_v0.py` |
 
+**Follow-on:** [`docs/amphibious/`](../amphibious/README.md) revisits water mode with deployable flotation and finds a displacement-speed integrated architecture (tub + fold-down rails + inflatable tubes + stern pod).
+
 ## The vehicle in one paragraph
 
 A 487 kg single-rider electric ATV (2.15 × 1.24 m, wheelbase 1.30 m, 26 in
