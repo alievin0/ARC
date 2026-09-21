@@ -94,6 +94,12 @@ without touching anything above the control layer.
 
 Detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+Physical-vehicle counterpart: the ARC-2B engineering feasibility study in
+[docs/feasibility/](docs/feasibility/README.md) (corner-module mechanism,
+failure analysis, interlocks, drivetrain, ski/track, marine, structures,
+battery, manufacturing plan, patents, and a "DO NOT BUILD YET" list; every
+number traces to `docs/feasibility/calc/params.py`).
+
 ---
 
 ## The one rule everything rests on

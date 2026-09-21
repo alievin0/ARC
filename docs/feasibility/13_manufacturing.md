@@ -1,0 +1,41 @@
+# Part 13 — Prototype manufacturing plan
+
+Volumes assumed: 1–3 prototypes per stage; 10–50 vehicles for a pilot series; ≤ 500/year at maturity. Process cost figures are from the process reference sheets and supplier guides in `REFERENCES.md` [MFG-1..7]; they are ranges, not quotes.
+
+## 13.1 Process comparison for this vehicle
+
+| Process | Where it fits on ARC-2B | Tooling / lead | Notes from sources |
+|---|---|---|---|
+| **CNC machining (6082/7075)** | pivot housings, carrier housings (prototype), knuckles, lock sectors, hub adapters | none; days–weeks | ±0.13 mm standard, ±0.05 mm tight; use ISO 2768-m and call ±0.05 mm only on bearing bores [MFG-1] |
+| **Laser-cut steel/aluminium plate** | floor/tub plates, brackets, sector plates, arm box blanks | none | commodity; not numerically sourced |
+| **Tube bending (4130)** | rider frame, hitch tower, rack | none; mandrel dies if CLR < 2× OD | keep CLR ≥ 2.5× OD so rotary-draw shops can bend it [MFG-2] |
+| **TIG welding 4130** | rider frame, hitch | none | thin-wall (< 3 mm) needs no preheat/PWHT; ER70S-2 [MFG-3] |
+| **MIG/TIG welding 5083/6082** | tub, arm boxes | none | design at as-welded allowables (Sy 115 / Su 175 MPa for 6061-T6) [STR-1][MFG-4]; 5083 for the hull |
+| **Aluminium machining from billet vs casting** | carrier housing: billet for prototypes (Stages 1–5), sand-cast A356-T6 + machining for the pilot series | sand pattern $500–20k, 2–6 weeks; investment $5–50k, 8–16 weeks | sand casting MOQ ~20–50 pieces; investment only for small detailed parts [MFG-5] |
+| **Composites (infusion)** | marine variant hull (alternative to 5083), body panels for the pilot series | plug + mould $10–40k class (not sourced; estimate) | vacuum infusion FVF 50–60%, void 2–5%; prepreg/autoclave not justified at this volume [MFG-5] |
+| **Rotomoulding (PE)** | sponsons, tanks, skid plates | $3–25k moulds, 3–8 weeks | 3–12 mm walls ±10–20%; heavy, low stiffness [MFG-5] |
+| **Thermoforming (ABS/TPO)** | body panels (fenders, covers) for prototypes and pilot | $5–50k tools | cheaper than injection below ~3,000–5,000 parts/year [MFG-5][MFG-6] |
+| **RIM (PU)** | body panels above ~200/year | $5–50k tools | 100–5,000/year sweet spot; must be painted [MFG-5] |
+| **Injection moulding** | small trim, grommets, connector covers only | $50–500k steel tools | break-even ~300–2,000 units per part; not for structure at ≤ 500/year [MFG-5][MFG-6] |
+| **Metal AM (AlSi10Mg, Ti-6Al-4V)** | coolant/HV manifold in the carrier, prototype knuckles | none; $200–400/kg Ti powder; ±0.1 mm | AlSi10Mg yield 220–290 MPa; post-processing often costs more than printing [MFG-7][MFG-5] |
+| **Polymer AM (MJF PA12 / SLS)** | Stage 0 packaging model, sensor housings, ducts, prototype covers | none | ±0.3 mm; 47 MPa tensile; not for UV-exposed exterior without coating [MFG-5] |
+
+Recommendation: billet + laser-cut + TIG for Stages 0–5; introduce sand-cast carriers, thermoformed panels and an infused or 5083 tub at the pilot series.
+
+## 13.2 Stage plan
+
+| Stage | Parts | Machines | Suppliers (type) | Engineering complexity | Testing required | Failure criteria (stage is not passed if…) |
+|---|---|---|---|---|---|---|
+| **0 — 1:1 packaging model** | foam/cardboard tub, 3D-printed carrier and arm shells, real wheels/tyres, real seat, a ski and a borrowed track cassette | FDM/MJF printers, hot-wire cutter | in-house; polymer AM bureau | low | rider ergonomics; wheel sweep 15°→60° and →−70° clearance to body; ski and cassette clearance on the hub; hitch reach | any wheel-sweep interference with the body or the rider; cassette cannot clear the arm at any carrier angle |
+| **1 — single corner mechanism** | one carrier (billet), one arm (welded box), pivot cartridge, lock sector + pin, one actuator, one coil-over, dummy hub with a real wheel; a rigid test frame | 3-axis CNC, TIG, hydraulic press; a hydraulic load rig (10 kN) | CNC shop; actuator supplier; ATV shock supplier; bearing distributor | medium | actuator force vs angle (compare to `calc/mechanism_statics.py`); lock engagement 1,000 cycles; 5 g equivalent static load with pin engaged; seal head test 0.5 m/1 h; freeze test −20 °C | actuator > 8 kN to lift a simulated 1.45 kN corner; pin fails to engage after unload; permanent set at 5 g; water past the seal |
+| **2 — one front + one rear module** | front module with knuckle, rack stub and tie-rod on the pivot axis; rear module with motor on the carrier and half-shaft; a bench "half-chassis" | as 1 + dyno for the motor | motor/inverter supplier; half-shaft supplier; steering rack supplier | medium–high | bump-steer plot across carrier angle (must be < 0.5°); half-shaft angle across travel; motor thermal at 8 kW for 1 h in the housing; drive through hub to a track sprocket on a rig | steer change > 0.5° over 15°–60° carrier sweep; CV angle > 40°; motor housing > 90 °C |
+| **3 — rolling chassis** | central platform, four modules, wheels, steering, brakes, LV battery, actuators; no HV pack (bench supply or a small pack), pushed/towed and driven at low speed | CNC, laser, TIG, bending | frame fabricator; brake supplier | medium | torsional stiffness (IMU twist method [STR-4]); static loads 1, 2, 6; ROAD ↔ HIGH transformation with a rider; LIFT of one corner; tilt table in ROAD and HIGH (Kst-style) | frame yields under case 2; transformation not completed in 10 s; LIFT cannot unload a corner with 100 kg rider |
+| **4 — road prototype** | + 12 kWh pack, four inverters, cooling, VCU, body panels (thermoformed), lighting | HV assembly area with interlocked test bay | pack integrator; inverter supplier; harness shop | high | duty-cycle energy (Wh/km) to lock pack size; 0–60 km/h; braking per ANSI/SVIA §7 [BRK-1]; instrumented drop tests to replace the assumed load factors (Part 10); 500 km durability; IP water spray; EMC pre-scan | Wh/km > 180 (pack too small); any HVIL/IMD event in the water spray; structural crack < 500 km |
+| **5 — robotic transformation prototype** | same vehicle, software: interlocks (Part 6), per-corner leveling, obstacle stepping; redundant sensors fitted | — | safety-rated controller supplier | high (software/safety) | fault injection of every Part 5 case; slope refusal; speed-cap enforcement; 10,000 transformation cycles; hardware-comparator lock test | any lock release above 5 km/h; any mode declared without switch confirmation |
+| **6 — ski prototype** | two ski adapters + skis, two track cassettes (adapted production kits first, then the custom cassette), SNOW maps | — | track/ski manufacturer | medium | swap time; drive-coupling check; tension switch; 200 km on snow; ski pressure tuning; Kst tilt in SNOW | swap > 10 min per corner; track derailment; motor thermal in tracks |
+| **7 — marine prototype** | (a) base vehicle: sponsons + 15–30 kW jet module + bilge; (b) variant: 2.6 × 1.5 m 5083 tub, arch flaps, PWC jet, 20 kWh pack | marine fabrication (5083 welding), infusion shop for the variant hull | marine engineering firm; jet pump supplier; naval architect | high (variant), medium (swim mode) | hydrostatics and inclining test; swamped flotation (ISO 12217-3 method); immersion of sealed corners; retraction afloat; displacement speed run; for the variant: planing threshold, porpoising, slamming accelerometers | GM < +0.25 m; any water in the battery box; retraction fails afloat; cannot reach displacement speed at < 15 kW |
+| **8 — integrated vehicle** | pilot-series design intent: cast carriers, thermoformed/RIM panels, production harness, full interlock software, owner's manual | pilot line | all | high (integration, certification) | ANSI/SVIA 1-2023 (Kst, Kp, brakes, EMC, sound) [REG-1]; EU L7e-B1 if road-registered or Machinery/EN 15997 route [REG-3]; UN R100/R136-style pack tests [HV-4][HV-7]; UL 2580 incl. immersion for the marine variant [HV-5]; 2,000 km durability | any failed standard test |
+
+## 13.3 Prototype cost realism (order of magnitude, not sourced quotes)
+
+A Baja SAE car is a useful low-volume benchmark in kind, but no cost figure could be verified in this study. Component price points that were seen: robotics actuators €600–1,600 each [SUP-4]; a Ranger XP Kinetic Ultimate at $37,499 and the Quadski at ~$40,000 at launch [SUP-7][SUP-9] bound what a premium electric transformable vehicle can sell for, and therefore what its BOM can be.
